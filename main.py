@@ -11,15 +11,18 @@ class RuntimeData:
 
 # Main script starts here
 def main():
+	# Check passed args
 	if len(sys.argv) < 2:
 		print("error: No wireless interface provided\n")
 		usage()
 		sys.exit(1)
 
+	#TODO: Verify NIC actually exists before accepting
 	userChannel = 1
 	if len(sys.argv) > 2:
 		userChannel = sys.argv[2]
 
+	# Initialize loop
 	runtimeData = RuntimeData(sys.argv[1], userChannel)
 	print("Using channel " + str(runtimeData.userChannel) + " on " + runtimeData.userNic + "\n")
 	inputLoop(runtimeData)
@@ -39,6 +42,7 @@ def inputLoop(runtimeData):
 		if command == "1":
 			#Fire aireplay-ng
 			deauth(runtimeData)
+			command = "-1"
 		elif command == "2":
 			#Fire airmon-ng
 			setPromisc(runtimeData)
@@ -53,8 +57,7 @@ def inputLoop(runtimeData):
 			listDevices(runtimeData)
 			command = "-1"
 		elif command == "6":
-			command = input("Enter NIC device name: ")
-			switchNIC(command, runtimeData)
+			switchNIC(runtimeData)
 			command = "-1"
 		elif command == "?":
 			usage()
@@ -74,9 +77,12 @@ def menu():
 	print("Enter one of the above commands:")
 
 def deauth(runtimeData):
+	apMAC = input("AP MAC: ")
+	supMAC = input("Target client MAC: ")
 	#Aireplay command to send deauth packets
-	cmd = ""
-	
+	cmd = " aireplay-ng -0 1 -a " + apMAC + " -c " + supMAC + " " + runtimeData.userNic
+	os.system(cmd)
+
 def setPromisc(runtimeData):
 	#Airmon command to set nic to promiscous
 	if sys.platform == "win32":
@@ -93,7 +99,8 @@ def listDevices(runtimeData):
 
 	os.system(cmd)
 
-def switchNIC(command, runtimeData):
+def switchNIC(runtimeData):
+	newNic = input("Enter NIC device name: ")
 	if sys.platform == "win32":
 		cmd = "idk how to escalate permissions in windows"
 	else:
