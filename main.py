@@ -1,5 +1,6 @@
 #!/bin/python
 import sys
+import os
 
 # This class contains state data used throughout the program
 # This may need to move to its own file if it gets too large
@@ -20,57 +21,91 @@ def main():
 		userChannel = sys.argv[2]
 
 	runtimeData = RuntimeData(sys.argv[1], userChannel)
-	print("Using channel " + runtimeData.userChannel + " on " + runtimeData.userNic + "\n")
+	print("Using channel " + str(runtimeData.userChannel) + " on " + runtimeData.userNic + "\n")
 	inputLoop(runtimeData)
 
 def usage():
-	print("usage: " + __file__ + " <device name> [channel]\n")
+	if sys.platform == "win32":
+		print("usage: python " + __file__ + " <device name> [channel]\n")
+	else:
+		print("usage: ./" + __file__ + " <device name> [channel]\n")
 
 def inputLoop(runtimeData):
-	command = -1
-
-	while command == -1:
-		print("1. Issue a deauthentication attack.\n")
-		print("2. Set NIC to promiscous mode.\n")
-		print("3. Capture an authentication packet.\n")
-		print("4. Crack a WPA2 key.\n")
-		print("5. Usage")
-		
-		print("Enter one of the above commands:\n")
-		
+	command = "-1"
+	menu()
+	while command == "-1":
 		command = input("> ")
 		
-		if command == 1:
+		if command == "1":
 			#Fire aireplay-ng
-			deauth()
-		elif command == 2:
+			deauth(runtimeData)
+		elif command == "2":
 			#Fire airmon-ng
-			monitor()
-		elif command == 3:
+			setPromisc(runtimeData)
+		elif command == "3":
 			#Fire airodump-ng
-			capture()
-		elif command == 4:
+			capture(runtimeData)
+		elif command == "4":
 			#Fire aircrack-ng
-			crack()
-		elif command == 5:
+			crack(runtimeData)
+		elif command == "5":
+			#Fire airmon-ng
+			listDevices(runtimeData)
+			command = "-1"
+		elif command == "6":
+			command = input("Enter NIC device name: ")
+			switchNIC(command, runtimeData)
+			command = "-1"
+		elif command == "?":
 			usage()
 		else:
-			print("Please enter a valid command.\n")
-			command = -1
+			menu()
+			command = "-1"
+
 	
-def deauth():
+def menu():
+	print("1. Issue a deauthentication attack.")
+	print("2. Set NIC to promiscous mode.")
+	print("3. Capture an authentication packet.")
+	print("4. Crack a WPA2 key.")
+	print("5. List network interfaces.")
+	print("6. Switch network interface")
+	print("?  Usage")
+	print("Enter one of the above commands:")
+
+def deauth(runtimeData):
 	#Aireplay command to send deauth packets
 	cmd = ""
 	
-def monitor():
+def setPromisc(runtimeData):
 	#Airmon command to set nic to promiscous
-	cmd = ""
+	if sys.platform == "win32":
+		cmd = "idk how to escalate permissions in windows"
+	else:
+		cmd = "sudo airmon-ng start " + runtimeData.userNic
+
+def listDevices(runtimeData):
+	#Airmon command to list devices'
+	if sys.platform == "win32":
+		cmd = "idk how to escalate permissions in windows"
+	else:
+		cmd = "sudo airmon-ng"
+
+	os.system(cmd)
+
+def switchNIC(command, runtimeData):
+	if sys.platform == "win32":
+		cmd = "idk how to escalate permissions in windows"
+	else:
+		cmd = "sudo airmon-ng stop " + runtimeData.userNic
+	runtimeData.userNic = command
+	os.system(cmd)
 	
-def capture():
+def capture(runtimeData):
 	#Airodump command to capture authentication traffic
 	cmd = ""
 	
-def crack():
+def crack(runtimeData):
 	#Aircrack command to crack the key in the traffic dump
 	cmd = ""
 
