@@ -46,12 +46,15 @@ def inputLoop(runtimeData):
 		elif command == "2":
 			#Fire airmon-ng
 			setPromisc(runtimeData)
+			command = "-1"
 		elif command == "3":
 			#Fire airodump-ng
 			capture(runtimeData)
+			command = "-1"
 		elif command == "4":
 			#Fire aircrack-ng
 			crack(runtimeData)
+			command = "-1"
 		elif command == "5":
 			#Fire airmon-ng
 			listDevices(runtimeData)
@@ -61,6 +64,7 @@ def inputLoop(runtimeData):
 			command = "-1"
 		elif command == "?":
 			usage()
+			command = "-1"
 		else:
 			menu()
 			command = "-1"
@@ -77,8 +81,6 @@ def menu():
 	print("Enter one of the above commands:")
 
 def deauth(runtimeData):
-	apMAC = input("AP MAC: ")
-	supMAC = input("Target client MAC: ")
 	#Aireplay command to send deauth packets
 	bssid = input("Specify the BSSID of the wireless AP: ")
 	target_mac = input("Specify the MAC address of the client you wish to deauthenticate: ")
@@ -91,6 +93,7 @@ def setPromisc(runtimeData):
 		cmd = "idk how to escalate permissions in windows"
 	else:
 		cmd = "sudo airmon-ng start " + runtimeData.userNic
+	os.system(cmd)
 
 def listDevices(runtimeData):
 	#Airmon command to list devices'
