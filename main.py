@@ -65,6 +65,8 @@ def inputLoop(runtimeData):
 		elif command == "?":
 			usage()
 			command = "-1"
+		elif command == "quit" or command == "exit" or command == "e" or command == "q":
+			break;
 		else:
 			menu()
 			command = "-1"
