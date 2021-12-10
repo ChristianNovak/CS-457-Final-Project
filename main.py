@@ -19,7 +19,7 @@ def main():
 	if len(sys.argv) > 2:
 		configPath = sys.argv[2]
 	else:
-	    configPath = sys.argv[1]
+		configPath = sys.argv[1]
 	config.read(configPath)
 
 	# Initialize loop
