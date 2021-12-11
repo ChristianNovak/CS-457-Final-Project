@@ -3,7 +3,7 @@ import os
 
 def graphMenu():
 	print("1. Create a Client to Access Point Relationship Graph")
-	print("2. Create a Client to Probe Request Graph"0
+	print("2. Create a Client to Probe Request Graph")
 	
 def graphInput():
 	graphMenu()
