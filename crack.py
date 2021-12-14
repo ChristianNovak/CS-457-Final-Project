@@ -36,4 +36,4 @@ def wepCrackKoreK(config):
     #Aircrack command to crack the key in the traffic dump
     	bssid = config['ap']['bssid']
     	capFile = input("Please specify a capture file: ")
-		cmd = "sudo aircrack-ng -K -b " + bssid + " " + capFile
+    	cmd = "sudo aircrack-ng -K -b " + bssid + " " + capFile
