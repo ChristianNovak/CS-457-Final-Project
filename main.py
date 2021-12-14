@@ -9,6 +9,15 @@ import injection as injection
 import capture as capture
 import crack as crack
 import graph as graph
+import krack as krack
+import dragonblood as dragonblood
+
+#Dependencies:
+#For use of aircrack, airmon, aireplay, airodump:
+#sudo apt install aircrack-ng
+#For use of airgraph:
+#sudo apt install airgraph-ng
+#For use of dragonslayer script for WPA3
 
 # Store user configuation
 config = configparser.ConfigParser()
@@ -66,6 +75,14 @@ def inputLoop(config, configPath):
 			#Show Graphing menu
 			graph.graphInput()
 			command = "-1"
+		elif command == "7":
+			#Show KRACK menu
+			krack.krackInput(config)
+			command = "-1"
+		elif command == "8":
+			#Show DragonBlood menu
+			dragonblood.dragonInput(config)
+			command = "-1"
 		elif command == "?":
 			usage()
 			command = "-1"
@@ -82,6 +99,8 @@ def menu():
 	print("4. Capture Commands")
 	print("5. Cracking Commands")
 	print("6. Graphing Commands")
+	print("7. KRACK Commands")
+	print("8. DragonBlood Commands")
 	print("?  Usage")
 	print("Enter one of the above commands:")
 

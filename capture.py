@@ -17,8 +17,8 @@ def captureInput(config):
 def capture(config):
 	#Get appropriate values from config
 	bssid = config['ap']['bssid']
-	nic = config['host']['nic']
-	channel = int(config['host']['channel'])
+	nic = config['host']['monitor_nic']
+	channel = config['host']['channel']
 	
 	#Promt the user for a capture file
 	capFile = input("Please specify a capture file to save to: ")

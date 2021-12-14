@@ -21,7 +21,7 @@ def clientAPGraph():
 	print("Please specify the output PNG file:")
 	png = input("> ")
 	
-	cmd = "airgraph-ng -i " + csv + " -o " + png + " -g CAPR"
+	cmd = "sudo airgraph-ng -i " + csv + " -o " + png + " -g CAPR"
 	os.system(cmd)
 	
 def clientProbeGraph():
@@ -30,5 +30,5 @@ def clientProbeGraph():
 	print("Please specify the output PNG file:")
 	png = input("> ")
 	
-	cmd = "airgraph-ng -i " + csv + " -o " + png + " -g CPG"
+	cmd = "sudo airgraph-ng -i " + csv + " -o " + png + " -g CPG"
 	os.system(cmd)

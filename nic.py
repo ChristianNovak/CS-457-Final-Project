@@ -6,7 +6,9 @@ def nicMenu():
 	#Show available NIC-related commands
 	print("1. List available network interfaces")
 	print("2. Switch currently selected NIC")
-	print("3. Set current NIC to promiscous")
+	print("3. Set current NIC to promiscuous")
+	print("4. Set current NIC to not promiscuous")
+	print("5. Reset network manager")
 	
 def nicInput(config):
 	#Arbitrary value for command
@@ -22,9 +24,15 @@ def nicInput(config):
 	#Change the current NIC (does not change config file)
 	elif command == "2":
 		switchNIC(config)
-	#Set current NIC to Promiscous
+	#Set current NIC to Promiscuous
 	elif command == "3":
 		setPromisc(config)
+	#Set current NIC to not Promiscuous
+	elif command == "4":
+		resetNIC(config)
+	#Reset network manager (after setting nic to not promiscuous)
+	elif command == "5":
+		resetNetMgr()
 	#Return to the main menu
 	else:
 		return
@@ -52,5 +60,17 @@ def setPromisc(config):
 	#Read user's NIC from config
 	nic = config['host']['nic']
 	#Issue airmon command to set NIC to promiscuous
-	cmd = "sudo airmon-ng start " + config.userNic
+	cmd = "sudo airmon-ng start " + nic
+	os.system(cmd)
+
+def resetNIC(config):
+	#Read monitoring NIC from config
+	nic = config['host']['monitor_nic']
+	#Issue airmon command to take NIC out of promiscuous
+	cmd = "sudo airmon-ng stop " + nic
+	os.system(cmd)
+
+def resetNetMgr():
+	#Issue system command to reset network manager
+	cmd = "sudo service network-manager start"
 	os.system(cmd)

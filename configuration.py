@@ -5,8 +5,12 @@ def newFile():
 	print("Specify the filepath to which you would like to save your configuration file.")
 	filePath = input("> ")
 	
+	print("Please enter the SSID of your target WAP:")
+	ssid = input("> ")
 	print("Please enter the BSSID of your target WAP:")
 	bssid = input("> ")
+	print("Please enter the PSK of your target WAP (if known, otherwise leave blank)")
+	psk = input("> ")
 	print("Please enter a MAC address for the target client on your network:")
 	target = input("> ")
 	print("Please enter the wireless NIC you wish to use:")
@@ -16,17 +20,27 @@ def newFile():
 	print("Please enter the wordlist file you will be using for cracking operations:")
 	wordList = input("> ")
 	
+	print("Please enter the path to your dragonslayer installation directory (Only for WPA3 DragonBlood Testing, leave blank otherwise):")
+	dragonslayerDir = input("> ")
+	
 	newConfig = configparser.ConfigParser()
 	
 	newConfig.add_section('ap')
 	newConfig.add_section('target')
 	newConfig.add_section('host')
 	
+	newConfig.add_section('dragonblood')
+	
+	newConfig['ap']['ssid'] = ssid
 	newConfig['ap']['bssid'] = bssid
+	newConfig['ap']['psk'] = psk
 	newConfig['target']['mac'] = target
 	newConfig['host']['nic'] = nic
+	newConfig['host']['monitor_nic'] = nic + "mon"
 	newConfig['host']['channel'] = channel
 	newConfig['host']['wordlist'] = wordList
+	
+	newConfig['dragonblood']['dragonslayerDir'] = dragonslayerDir
 	
 	with open(filePath, 'w') as configFile:
 		newConfig.write(configFile)
