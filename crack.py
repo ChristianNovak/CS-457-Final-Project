@@ -7,8 +7,9 @@ def crackMenu():
 	print("2. Crack a WEP key with IVs")
 	print("3. Crack a WEP key with IVs using KoreK method")
 	
-def crackInput():
+def crackInput(config):
 	crackMenu()
+	command = input("> ")
 	if command == "1":
 		keyCrack(config)
 	elif command == "2":

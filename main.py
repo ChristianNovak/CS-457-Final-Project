@@ -61,7 +61,7 @@ def inputLoop(config, configPath):
 			command = "-1"
 		elif command == "3":
 			#Show Injection menu
-			injection.injectionMenu(config)
+			injection.injectionInput(config)
 			command = "-1"
 		elif command == "4":
 			#show Capture menu
